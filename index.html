@@ -1,2079 +1,1832 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl" class="dark">
+<html lang="fa" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Armin AI</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
+
   <script>
     tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              50: '#eef2ff',
-              100: '#e0e7ff',
-              500: '#6366f1',
-              600: '#4f46e5',
-              700: '#4338ca'
-            },
-            surface: {
-              800: '#1e1f2b',
-              850: '#181924',
-              900: '#11121a',
-              950: '#0b0b10'
-            }
-          },
-          fontFamily: {
-            sans: ['Vazirmatn', 'Inter', 'system-ui', 'sans-serif']
-          }
-        }
-      }
+      darkMode: "class"
     };
   </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/marked-highlight@2.1.1/lib/index.umd.js"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js/lib/common.min.js"></script>
 
   <style>
     * {
-      font-family: 'Vazirmatn', 'Inter', system-ui, sans-serif;
       box-sizing: border-box;
     }
 
-    pre code.hljs {
-      direction: ltr;
-      text-align: left;
-      border-radius: 0.5rem;
-      padding: 1rem;
-      font-family: 'Fira Code', 'Courier New', Courier, monospace;
-      font-size: 0.88rem;
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      font-family: "Vazirmatn", sans-serif;
+      background: #f8fafc;
     }
 
-    .prose p {
-      margin-bottom: 0.75rem;
-      line-height: 1.8;
+    body {
+      overflow: hidden;
     }
 
-    .prose p:last-child {
-      margin-bottom: 0;
-    }
-
-    .prose ul,
-    .prose ol {
-      margin-right: 1.5rem;
-      margin-bottom: 0.75rem;
-    }
-
-    .prose ul {
-      list-style-type: disc;
-    }
-
-    .prose ol {
-      list-style-type: decimal;
-    }
-
-    .prose li {
-      margin-bottom: 0.35rem;
-    }
-
-    .prose strong {
-      color: #818cf8;
-    }
-
-    .prose blockquote {
-      border-right: 4px solid #6366f1;
-      padding-right: 0.75rem;
-      margin: 0.75rem 0;
-      color: #94a3b8;
+    .dark body {
+      background: #0b0f14;
+      color: #e5e7eb;
     }
 
     ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: transparent;
+      width: 7px;
     }
 
     ::-webkit-scrollbar-thumb {
-      background: rgba(148, 163, 184, 0.2);
-      border-radius: 9999px;
+      background: #94a3b8;
+      border-radius: 10px;
     }
 
-    ::-webkit-scrollbar-thumb:hover {
-      background: rgba(148, 163, 184, 0.4);
+    .dark ::-webkit-scrollbar-thumb {
+      background: #334155;
+    }
+
+    .message-content {
+      line-height: 1.9;
+    }
+
+    .message-content p {
+      margin: 0 0 12px;
+    }
+
+    .message-content p:last-child {
+      margin-bottom: 0;
+    }
+
+    .message-content ul,
+    .message-content ol {
+      padding-right: 25px;
+      margin: 10px 0;
+    }
+
+    .message-content li {
+      margin: 4px 0;
+    }
+
+    .message-content pre {
+      direction: ltr;
+      text-align: left;
+      background: #111827;
+      color: #e5e7eb;
+      border-radius: 12px;
+      padding: 15px;
+      overflow-x: auto;
+      margin: 14px 0;
+      position: relative;
+    }
+
+    .message-content code {
+      font-family: Consolas, Monaco, monospace;
+    }
+
+    .message-content :not(pre) > code {
+      background: #e2e8f0;
+      color: #0f172a;
+      padding: 2px 6px;
+      border-radius: 6px;
+      direction: ltr;
+      display: inline-block;
+    }
+
+    .dark .message-content :not(pre) > code {
+      background: #1e293b;
+      color: #e2e8f0;
+    }
+
+    .code-wrapper {
+      position: relative;
+    }
+
+    .copy-code {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      z-index: 2;
+      border: 0;
+      background: rgba(255,255,255,.12);
+      color: white;
+      padding: 5px 9px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .copy-code:hover {
+      background: rgba(255,255,255,.2);
+    }
+
+    .typing {
+      display: inline-flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .typing span {
+      width: 6px;
+      height: 6px;
+      background: currentColor;
+      border-radius: 50%;
+      animation: blink 1.2s infinite;
+    }
+
+    .typing span:nth-child(2) {
+      animation-delay: .15s;
+    }
+
+    .typing span:nth-child(3) {
+      animation-delay: .3s;
     }
 
     @keyframes blink {
-      0%, 100% {
-        opacity: 0.2;
-        transform: scale(0.85);
+      0%, 80%, 100% {
+        opacity: .25;
       }
 
-      50% {
+      40% {
         opacity: 1;
-        transform: scale(1.15);
       }
     }
 
-    .typing-dot {
-      animation: blink 1.4s infinite both;
+    .sidebar-transition {
+      transition: width .2s ease, transform .2s ease;
     }
 
-    .typing-dot:nth-child(2) {
-      animation-delay: 0.2s;
-    }
-
-    .typing-dot:nth-child(3) {
-      animation-delay: 0.4s;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(4px);
+    @media (max-width: 768px) {
+      #sidebar {
+        position: fixed;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 50;
+        box-shadow: -10px 0 30px rgba(0,0,0,.12);
       }
 
-      to {
-        opacity: 1;
-        transform: translateY(0);
+      #sidebar.closed {
+        transform: translateX(100%);
       }
-    }
-
-    .animate-fade-in {
-      animation: fadeIn 0.25s ease-out;
     }
   </style>
 </head>
 
-<body class="bg-gray-50 text-gray-800 dark:bg-surface-950 dark:text-gray-100 h-screen flex overflow-hidden antialiased select-none">
+<body>
 
-  <div id="sidebarBackdrop" class="fixed inset-0 bg-black/60 z-30 hidden md:hidden transition-opacity"></div>
+<div id="app" class="h-screen flex bg-slate-50 dark:bg-[#0b0f14]">
 
-  <aside id="sidebar" class="fixed md:static inset-y-0 right-0 z-40 w-72 bg-white dark:bg-surface-900 border-l border-gray-200 dark:border-gray-800/80 flex flex-col transition-transform duration-300 transform translate-x-full md:translate-x-0">
-
-    <div class="p-4 flex items-center justify-between border-b border-gray-100 dark:border-gray-800/60">
-      <div class="flex items-center gap-2.5">
-
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-400 flex items-center justify-center text-white font-bold shadow-lg shadow-brand-500/20">
-          A
-        </div>
-
-        <div>
-          <h1 class="font-bold text-lg leading-tight tracking-tight">
-            Armin AI
-          </h1>
-
-          <span class="text-xs text-brand-600 dark:text-brand-400 font-medium">
-            دستیار هوشمند
-          </span>
-        </div>
-      </div>
-
-      <button
-        id="closeSidebarBtn"
-        class="md:hidden p-1.5 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-surface-800"
-      >
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-        </svg>
-      </button>
-    </div>
-
-    <div class="p-3">
-      <button
-        id="newChatBtn"
-        class="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-medium text-sm transition-all shadow-md shadow-brand-600/20 active:scale-[0.98]"
-      >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-        </svg>
-
-        <span>گفتگوی جدید</span>
-      </button>
-    </div>
-
-    <div
-      class="flex-1 overflow-y-auto px-3 py-1 space-y-1 select-text"
-      id="chatsList"
-    ></div>
-
-    <div class="p-3 border-t border-gray-100 dark:border-gray-800/60 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-
-      <button
-        id="openSettingsBtn"
-        class="flex items-center gap-1.5 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-surface-800 transition-colors"
-      >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31.826-2.37-2.37a1.724 1.724 0 001.065-2.572c1.756-.426 1.756-2.924 0-3.35a1.724 1.724 0 00-1.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-        </svg>
-
-        <span>تنظیمات</span>
-      </button>
-
-      <button
-        id="themeToggleBtn"
-        class="flex items-center gap-1.5 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-surface-800 transition-colors"
-        title="تغییر پوسته"
-      >
-        <span id="themeIcon">🌙</span>
-      </button>
-    </div>
-  </aside>
-
-  <main class="flex-1 flex flex-col h-full relative overflow-hidden bg-gray-50 dark:bg-surface-950">
-
-    <header class="h-14 border-b border-gray-200 dark:border-gray-800/80 bg-white/70 dark:bg-surface-900/60 backdrop-blur-md flex items-center justify-between px-4 z-10">
-
-      <div class="flex items-center gap-3">
-
-        <button
-          id="openSidebarBtn"
-          class="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-surface-800 text-gray-600 dark:text-gray-300"
-        >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-          </svg>
-        </button>
-
-        <div>
-          <h2
-            id="currentChatTitle"
-            class="font-semibold text-sm md:text-base text-gray-800 dark:text-gray-100 truncate max-w-[200px] md:max-w-md"
-          >
-            گفتگوی جدید
-          </h2>
-
-          <span class="text-[11px] text-emerald-500 flex items-center gap-1 font-medium">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            Armin AI آماده پاسخگویی
-          </span>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-2">
-
-        <button
-          id="clearChatBtn"
-          class="p-2 text-gray-500 hover:text-red-500 hover:bg-gray-100 dark:hover:bg-surface-800 rounded-lg transition-colors text-xs flex items-center gap-1"
-          title="پاک‌کردن پیام‌های این گفتگو"
-        >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 011 1v3M4 7h16"/>
-          </svg>
-
-          <span class="hidden sm:inline">پاک‌سازی</span>
-        </button>
-
-      </div>
-    </header>
-
-    <div
-      id="messagesFeed"
-      class="flex-1 overflow-y-auto p-4 md:p-6 space-y-5 select-text"
-    >
-
-      <div
-        id="emptyState"
-        class="h-full flex flex-col items-center justify-center text-center max-w-md mx-auto px-4"
-      >
-
-        <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-brand-600 to-indigo-400 flex items-center justify-center text-white text-2xl font-bold shadow-xl shadow-brand-500/20 mb-4 animate-bounce">
-          A
-        </div>
-
-        <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">
-          سلام! من Armin AI هستم
-        </h3>
-
-        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-6">
-          دستیار هوش مصنوعی شما برای پاسخ به پرسش‌ها، نوشتن کد، ایده‌پردازی و تحلیل دقیق مطالب. هر سؤالی داری بپرس!
-        </p>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 w-full">
-
-          <button class="prompt-chip text-right p-3 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-surface-850 hover:border-brand-500 dark:hover:border-brand-500 transition-all text-xs text-gray-700 dark:text-gray-300">
-            💡 یک ایده برای پروژه وب با جاوااسکریپت پیشنهاد بده
-          </button>
-
-          <button class="prompt-chip text-right p-3 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-surface-850 hover:border-brand-500 dark:hover:border-brand-500 transition-all text-xs text-gray-700 dark:text-gray-300">
-            💻 چطور می‌توانم در JavaScript تابع debounce بسازم؟
-          </button>
-
-          <button class="prompt-chip text-right p-3 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-surface-850 hover:border-brand-500 dark:hover:border-brand-500 transition-all text-xs text-gray-700 dark:text-gray-300">
-            📝 یک ایمیل رسمی برای ارائه گزارش کار بنویس
-          </button>
-
-          <button class="prompt-chip text-right p-3 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-surface-850 hover:border-brand-500 dark:hover:border-brand-500 transition-all text-xs text-gray-700 dark:text-gray-300">
-            🤖 اسمت چیه و چه کارهایی می‌توانی انجام دهی؟
-          </button>
-
-        </div>
-      </div>
-    </div>
-
-    <div class="p-3 md:p-4 bg-white/70 dark:bg-surface-900/60 backdrop-blur-md border-t border-gray-200 dark:border-gray-800/80">
-
-      <div class="max-w-4xl mx-auto">
-
-        <div
-          id="errorToast"
-          class="hidden mb-2.5 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-xs flex items-center justify-between"
-        >
-
-          <div class="flex items-center gap-2">
-
-            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-            </svg>
-
-            <span id="errorMessageText">
-              خطایی رخ داده است.
-            </span>
-          </div>
-
-          <button
-            id="dismissErrorBtn"
-            class="text-gray-400 hover:text-gray-600"
-          >
-            ✕
-          </button>
-
-        </div>
-
-        <form
-          id="chatForm"
-          class="relative flex items-end gap-2 bg-gray-100 dark:bg-surface-800 rounded-2xl p-1.5 border border-transparent focus-within:border-brand-500 transition-all shadow-inner"
-        >
-
-          <textarea
-            id="promptInput"
-            rows="1"
-            placeholder="پیامی برای Armin AI بنویسید... (Enter برای ارسال، Shift+Enter برای خط جدید)"
-            class="flex-1 max-h-36 bg-transparent resize-none outline-none text-sm md:text-base px-3 py-2 text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 leading-relaxed overflow-y-auto"
-          ></textarea>
-
-          <div class="flex items-center gap-1">
-
-            <button
-              type="button"
-              id="stopGenBtn"
-              class="hidden p-2 rounded-xl bg-red-600 hover:bg-red-700 text-white transition-all text-xs font-medium"
-              title="توقف تولید پاسخ"
-            >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"/>
-              </svg>
-            </button>
-
-            <button
-              type="submit"
-              id="sendBtn"
-              class="p-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 active:scale-95 disabled:opacity-40 disabled:pointer-events-none text-white transition-all shadow-md shadow-brand-600/20"
-              disabled
-            >
-              <svg class="w-5 h-5 transform -rotate-90 rtl:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
-              </svg>
-            </button>
-
-          </div>
-        </form>
-
-        <div class="flex items-center justify-between text-[11px] text-gray-400 mt-2 px-1">
-          <span>Armin AI — نسخه دمو</span>
-          <span>Armin AI ممکن است اشتباه کند؛ اطلاعات مهم را بررسی کنید.</span>
-        </div>
-
-      </div>
-    </div>
-  </main>
-
-  <div
-    id="settingsModal"
-    class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden"
+  <!-- Sidebar -->
+  <aside
+    id="sidebar"
+    class="sidebar-transition w-[280px] shrink-0 border-l border-slate-200 dark:border-slate-800 bg-white dark:bg-[#11161d] flex flex-col"
   >
 
-    <div class="bg-white dark:bg-surface-900 border border-gray-200 dark:border-gray-800 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+    <div class="p-4 border-b border-slate-200 dark:border-slate-800">
 
-      <div class="p-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
+      <div class="flex items-center justify-between mb-4">
 
-        <h3 class="font-bold text-base text-gray-800 dark:text-gray-100 flex items-center gap-2">
-          <span>⚙️ تنظیمات اتصال Armin AI</span>
-        </h3>
+        <div class="flex items-center gap-3">
+
+          <div
+            class="w-10 h-10 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 flex items-center justify-center font-bold text-lg"
+          >
+            A
+          </div>
+
+          <div>
+            <div class="font-bold text-lg">
+              Armin AI
+            </div>
+
+            <div class="text-xs text-slate-500">
+              دستیار هوش مصنوعی
+            </div>
+          </div>
+
+        </div>
 
         <button
-          id="closeSettingsModal"
-          class="p-1 rounded-lg text-gray-400 hover:bg-gray-100 dark:hover:bg-surface-800"
+          id="closeSidebar"
+          class="md:hidden text-slate-500 hover:text-slate-900 dark:hover:text-white"
         >
           ✕
         </button>
 
       </div>
 
-      <div class="p-5 space-y-4 text-xs md:text-sm">
+      <button
+        id="newChatBtn"
+        class="w-full rounded-xl bg-slate-900 hover:bg-slate-800 text-white py-3 px-4 transition"
+      >
+        + گفتگوی جدید
+      </button>
+
+    </div>
+
+    <div class="flex-1 overflow-y-auto p-3">
+
+      <div
+        id="chatList"
+        class="space-y-2"
+      ></div>
+
+      <div
+        id="emptyChats"
+        class="text-center text-sm text-slate-400 py-10"
+      >
+        هنوز گفتگویی وجود ندارد
+      </div>
+
+    </div>
+
+    <div class="p-3 border-t border-slate-200 dark:border-slate-800">
+
+      <button
+        id="settingsBtn"
+        class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-sm"
+      >
+        ⚙️
+        <span>تنظیمات</span>
+      </button>
+
+      <button
+        id="themeBtn"
+        class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-sm"
+      >
+        🌙
+        <span id="themeText">حالت تاریک</span>
+      </button>
+
+    </div>
+
+  </aside>
+
+  <!-- Main -->
+  <main class="flex-1 min-w-0 flex flex-col">
+
+    <!-- Header -->
+    <header
+      class="h-16 shrink-0 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-[#11161d] flex items-center justify-between px-4"
+    >
+
+      <div class="flex items-center gap-3">
+
+        <button
+          id="openSidebar"
+          class="md:hidden w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
+        >
+          ☰
+        </button>
 
         <div>
+          <div
+            id="headerTitle"
+            class="font-semibold"
+          >
+            گفتگوی جدید
+          </div>
 
-          <label class="block font-medium text-gray-700 dark:text-gray-300 mb-1">
-            آدرس پروکسی امن (Cloudflare Worker):
-          </label>
-
-          <input
-            type="url"
-            id="proxyUrlInput"
-            placeholder="https://armin-ai.armin-127-d.workers.dev"
-            class="w-full bg-gray-50 dark:bg-surface-800 border border-gray-300 dark:border-gray-700 rounded-xl px-3 py-2 text-xs md:text-sm text-gray-800 dark:text-gray-200 focus:outline-none focus:border-brand-500 direction-ltr text-left"
-          />
-
-          <p class="text-[11px] text-gray-500 mt-1">
-            کلید سرویس هرگز در مرورگر ذخیره نمی‌شود؛ فقط در Cloudflare Worker به‌عنوان Secret نگهداری می‌شود.
-          </p>
-
+          <div class="text-xs text-slate-400">
+            Armin AI
+          </div>
         </div>
 
-        <div>
+      </div>
 
-          <label class="block font-medium text-gray-700 dark:text-gray-300 mb-1">
-            مدل هوش مصنوعی:
-          </label>
+      <div
+        id="modelBadge"
+        class="text-xs px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500"
+      >
+        Groq
+      </div>
 
-          <select
-            id="modelSelect"
-            class="w-full bg-gray-50 dark:bg-surface-800 border border-gray-300 dark:border-gray-700 rounded-xl px-3 py-2 text-xs md:text-sm text-gray-800 dark:text-gray-200 focus:outline-none focus:border-brand-500"
+    </header>
+
+    <!-- Messages -->
+    <section
+      id="messages"
+      class="flex-1 overflow-y-auto"
+    >
+
+      <div
+        id="welcome"
+        class="min-h-full flex items-center justify-center px-4 py-10"
+      >
+
+        <div class="max-w-2xl w-full text-center">
+
+          <div
+            class="mx-auto mb-5 w-16 h-16 rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 flex items-center justify-center text-2xl font-bold"
           >
-            <option value="gemini-3.5-flash">
-              Armin Flash 3.5 — متعادل و قدرتمند
-            </option>
-          </select>
+            A
+          </div>
 
-          <p class="text-[11px] text-gray-500 mt-1">
-            مدل فعلی Armin AI: Gemini 3.5 Flash
+          <h1 class="text-3xl font-bold mb-3">
+            سلام! من Armin AI هستم
+          </h1>
+
+          <p class="text-slate-500 dark:text-slate-400 mb-8">
+            دستیار هوش مصنوعی شما برای پاسخ به پرسش‌ها،
+            نوشتن کد، ایده‌پردازی و تحلیل مطالب.
           </p>
+
+          <div class="grid sm:grid-cols-2 gap-3">
+
+            <button
+              class="prompt-btn p-4 text-right rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+              data-prompt="یک ایده برای پروژه وب با جاوااسکریپت پیشنهاد بده"
+            >
+              💡 یک ایده برای پروژه وب با جاوااسکریپت پیشنهاد بده
+            </button>
+
+            <button
+              class="prompt-btn p-4 text-right rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+              data-prompt="چطور می‌توانم در JavaScript تابع debounce بسازم؟"
+            >
+              💻 چطور می‌توانم در JavaScript تابع debounce بسازم؟
+            </button>
+
+            <button
+              class="prompt-btn p-4 text-right rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+              data-prompt="یک ایمیل رسمی برای ارائه گزارش کار بنویس"
+            >
+              📝 یک ایمیل رسمی برای ارائه گزارش کار بنویس
+            </button>
+
+            <button
+              class="prompt-btn p-4 text-right rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+              data-prompt="اسمت چیه و چه کارهایی می‌توانی انجام دهی؟"
+            >
+              🤖 اسمت چیه و چه کارهایی می‌توانی انجام دهی؟
+            </button>
+
+          </div>
 
         </div>
 
       </div>
 
-      <div class="p-4 bg-gray-50 dark:bg-surface-950 border-t border-gray-100 dark:border-gray-800 flex justify-end gap-2">
+      <div
+        id="messageContainer"
+        class="max-w-4xl mx-auto px-4 py-6 space-y-6 hidden"
+      ></div>
 
-        <button
-          id="saveSettingsBtn"
-          class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs md:text-sm font-medium transition-all"
+    </section>
+
+    <!-- Input -->
+    <div
+      class="shrink-0 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-[#11161d] p-3"
+    >
+
+      <div class="max-w-4xl mx-auto">
+
+        <form
+          id="chatForm"
+          class="flex items-end gap-2"
         >
-          ذخیره تغییرات
-        </button>
+
+          <textarea
+            id="messageInput"
+            rows="1"
+            placeholder="پیامت را بنویس..."
+            class="flex-1 resize-none max-h-40 rounded-2xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-[#0b0f14] px-4 py-3 outline-none focus:ring-2 focus:ring-slate-400 dark:focus:ring-slate-600"
+          ></textarea>
+
+          <button
+            id="sendBtn"
+            type="submit"
+            class="w-12 h-12 shrink-0 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center"
+          >
+            ➤
+          </button>
+
+        </form>
+
+        <div class="text-center text-[11px] text-slate-400 mt-2">
+          Armin AI ممکن است گاهی پاسخ نادرست تولید کند.
+        </div>
 
       </div>
 
     </div>
+
+  </main>
+
+</div>
+
+
+<!-- Settings Modal -->
+<div
+  id="settingsModal"
+  class="hidden fixed inset-0 z-[100] bg-black/50 items-center justify-center p-4"
+>
+
+  <div
+    class="w-full max-w-lg rounded-2xl bg-white dark:bg-[#11161d] border border-slate-200 dark:border-slate-800 shadow-2xl"
+  >
+
+    <div class="p-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+
+      <h2 class="font-bold text-lg">
+        تنظیمات
+      </h2>
+
+      <button
+        id="closeSettings"
+        class="text-slate-500 hover:text-slate-900 dark:hover:text-white"
+      >
+        ✕
+      </button>
+
+    </div>
+
+    <div class="p-5 space-y-5">
+
+      <div>
+
+        <label class="block text-sm font-medium mb-2">
+          Worker URL
+        </label>
+
+        <input
+          id="proxyUrl"
+          type="url"
+          class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-[#0b0f14] px-4 py-3 outline-none"
+          placeholder="https://example.workers.dev"
+        >
+
+      </div>
+
+      <div>
+
+        <label class="block text-sm font-medium mb-2">
+          مدل
+        </label>
+
+        <select
+          id="modelSelect"
+          class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-[#0b0f14] px-4 py-3 outline-none"
+        >
+          <option value="openai/gpt-oss-120b">
+            Armin AI — GPT OSS 120B
+          </option>
+        </select>
+
+      </div>
+
+    </div>
+
+    <div class="p-5 border-t border-slate-200 dark:border-slate-800 flex justify-end gap-2">
+
+      <button
+        id="cancelSettings"
+        class="px-5 py-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800"
+      >
+        لغو
+      </button>
+
+      <button
+        id="saveSettings"
+        class="px-5 py-2.5 rounded-xl bg-slate-900 text-white"
+      >
+        ذخیره
+      </button>
+
+    </div>
+
   </div>
 
-  <script>
-    const APP_CONFIG = {
-      defaultModel: 'gemini-3.5-flash',
+</div>
 
-      allowedModels: [
-        'gemini-3.5-flash'
-      ],
 
-      defaultProxyUrl:
-        'https://armin-ai.armin-127-d.workers.dev',
+<script>
+"use strict";
 
-      storageKeys: {
-        chats: 'armin_ai_chats_v1',
-        activeChatId: 'armin_ai_active_chat_id',
-        proxyUrl: 'armin_ai_proxy_url',
-        selectedModel: 'armin_ai_model',
-        theme: 'armin_ai_theme'
-      },
+/* ================================
+   CONFIG
+================================ */
 
-      streamTimeoutMs: 90000,
-      maxInputLength: 8000,
+const APP_CONFIG = {
 
-      systemPersona: [
-        'تو Armin AI هستی، یک دستیار هوش مصنوعی هوشمند، کارآمد و مودب.',
-        'قوانین شخصیتی و رفتاری تو:',
-        '1. اگر کاربر پرسید "اسمت چیه؟" یا "تو کی هستی؟"، پاسخ دقیق و مستقیم بده: "من Armin AI هستم."',
-        '2. اگر درباره فناوری یا مدل پشت سیستم از تو سؤال شد، صادق باش و اطلاعات نادرست نده. بگو که Armin AI بر پایه‌ی مدل‌های زبانی پیشرفته‌ی گوگل (Gemini) ساخته شده و خودت مدل اختصاصی از صفر نیستی.',
-        '3. لحن تو باید طبیعی، محترمانه، راه‌گشا و حرفه‌ای باشد.',
-        '4. پاسخ‌ها را با ساختار شفاف، پاراگراف‌بندی منظم و در صورت نیاز با کدهای فرمت‌بندی شده Markdown ارائه بده.'
-      ].join('\n')
-    };
+  proxyUrl:
+    "https://armin-ai.armin-127-d.workers.dev",
 
-    let state = {
-      chats: [],
-      activeChatId: null,
-      isGenerating: false,
-      abortController: null,
-      timeoutHandle: null,
+  defaultModel:
+    "openai/gpt-oss-120b",
 
-      config: {
-        proxyUrl: APP_CONFIG.defaultProxyUrl,
-        model: APP_CONFIG.defaultModel
-      }
-    };
+  allowedModels: [
+    "openai/gpt-oss-120b"
+  ],
 
-    const els = {
-      sidebar: document.getElementById('sidebar'),
-      sidebarBackdrop: document.getElementById('sidebarBackdrop'),
-      openSidebarBtn: document.getElementById('openSidebarBtn'),
-      closeSidebarBtn: document.getElementById('closeSidebarBtn'),
-      newChatBtn: document.getElementById('newChatBtn'),
-      chatsList: document.getElementById('chatsList'),
-      currentChatTitle: document.getElementById('currentChatTitle'),
-      clearChatBtn: document.getElementById('clearChatBtn'),
-      messagesFeed: document.getElementById('messagesFeed'),
-      emptyState: document.getElementById('emptyState'),
-      chatForm: document.getElementById('chatForm'),
-      promptInput: document.getElementById('promptInput'),
-      sendBtn: document.getElementById('sendBtn'),
-      stopGenBtn: document.getElementById('stopGenBtn'),
-      errorToast: document.getElementById('errorToast'),
-      errorMessageText: document.getElementById('errorMessageText'),
-      dismissErrorBtn: document.getElementById('dismissErrorBtn'),
-      openSettingsBtn: document.getElementById('openSettingsBtn'),
-      settingsModal: document.getElementById('settingsModal'),
-      closeSettingsModal: document.getElementById('closeSettingsModal'),
-      saveSettingsBtn: document.getElementById('saveSettingsBtn'),
-      proxyUrlInput: document.getElementById('proxyUrlInput'),
-      modelSelect: document.getElementById('modelSelect'),
-      themeToggleBtn: document.getElementById('themeToggleBtn'),
-      themeIcon: document.getElementById('themeIcon')
-    };
+  storageKeys: {
+    chats: "armin_ai_chats",
+    activeChat: "armin_ai_active_chat",
+    selectedModel: "armin_ai_model",
+    proxyUrl: "armin_ai_proxy_url",
+    theme: "armin_ai_theme"
+  },
 
-    function setupMarkdown() {
-      const markedLib = window.marked;
-      const markedHighlightLib = window.markedHighlight;
+  systemPersona: `
+تو Armin AI هستی.
 
-      if (!markedLib) {
-        window.__renderMarkdown = function (text) {
-          return '<p>' + escapeHtml(text || '') + '</p>';
-        };
-        return;
-      }
+اگر کاربر درباره نامت پرسید، بگو:
+«من Armin AI هستم.»
 
-      if (
-        markedHighlightLib &&
-        typeof markedHighlightLib.markedHighlight === 'function'
-      ) {
-        markedLib.use(
-          markedHighlightLib.markedHighlight({
-            emptyLangClass: 'hljs',
-            langPrefix: 'hljs language-',
+تو یک دستیار هوش مصنوعی فارسی‌زبان، طبیعی، محترمانه، مفید و حرفه‌ای هستی.
 
-            highlight: function (code, lang) {
-              try {
-                if (
-                  lang &&
-                  window.hljs &&
-                  window.hljs.getLanguage(lang)
-                ) {
-                  return window.hljs.highlight(code, {
-                    language: lang
-                  }).value;
-                }
+می‌توانی در زمینه‌هایی مانند:
+- پاسخ به پرسش‌ها
+- برنامه‌نویسی
+- تحلیل
+- ایده‌پردازی
+- نوشتن و ویرایش متن
+- آموزش
+- حل مسئله
+کمک کنی.
 
-                if (window.hljs) {
-                  return window.hljs.highlightAuto(code).value;
-                }
-              } catch (e) {
-              }
+اگر درباره فناوری یا مدل هوش مصنوعی از تو سؤال شد، صادق باش.
+Armin AI از مدل‌های زبانی پیشرفته استفاده می‌کند و ادعا نکن که یک مدل زبانی از صفر ساخته شده است.
 
-              return code;
-            }
-          })
-        );
-      }
+پاسخ‌ها را واضح، طبیعی و تا حد امکان مختصر بده.
+در صورت نیاز از Markdown و کد استفاده کن.
+`
+};
 
-      window.__renderMarkdown = function (text) {
-        try {
-          return markedLib.parse(
-            text || '',
-            {
-              gfm: true,
-              breaks: true
-            }
-          );
-        } catch (err) {
-          console.error(
-            'Markdown render failed:',
-            err
-          );
 
-          return '<p>' +
-            escapeHtml(text || '') +
-            '</p>';
-        }
-      };
-    }
+/* ================================
+   STATE
+================================ */
 
-    function escapeHtml(text) {
-      if (
-        text === null ||
-        text === undefined
-      ) {
-        return '';
-      }
+const state = {
 
-      return String(text)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-    }
+  chats: [],
 
-    function copyText(text, btnElement) {
-      const textarea =
-        document.createElement('textarea');
+  activeChatId: null,
 
-      textarea.value = text;
-      textarea.style.position = 'fixed';
-      textarea.style.opacity = '0';
+  config: {
+    proxyUrl: APP_CONFIG.proxyUrl,
+    model: APP_CONFIG.defaultModel
+  },
 
-      document.body.appendChild(textarea);
-      textarea.select();
+  theme: "light",
 
-      try {
-        document.execCommand('copy');
+  sending: false
+};
 
-        if (btnElement) {
-          const originalText =
-            btnElement.innerHTML;
 
-          btnElement.innerHTML =
-            '✓ کپی شد';
+/* ================================
+   ELEMENTS
+================================ */
 
-          btnElement.classList.add(
-            'text-emerald-500'
-          );
+const $ = id =>
+  document.getElementById(id);
 
-          setTimeout(function () {
-            btnElement.innerHTML =
-              originalText;
+const messages =
+  $("messages");
 
-            btnElement.classList.remove(
-              'text-emerald-500'
-            );
-          }, 2000);
-        }
+const welcome =
+  $("welcome");
 
-      } catch (err) {
-        showError(
-          'امکان کپی در کلیپ‌بورد فراهم نشد.'
-        );
-      }
+const messageContainer =
+  $("messageContainer");
 
-      document.body.removeChild(textarea);
-    }
+const messageInput =
+  $("messageInput");
 
-    function buildTitleSafely(text) {
-      const maxLen = 32;
-      const arr = Array.from(text);
+const chatForm =
+  $("chatForm");
 
-      if (arr.length <= maxLen) {
-        return text;
-      }
+const sendBtn =
+  $("sendBtn");
 
-      return arr.slice(0, maxLen).join('') + '…';
-    }
+const chatList =
+  $("chatList");
 
-    function loadState() {
-      try {
+const emptyChats =
+  $("emptyChats");
 
-        const storedProxy =
-          localStorage.getItem(
-            APP_CONFIG.storageKeys.proxyUrl
-          );
+const headerTitle =
+  $("headerTitle");
 
-        state.config.proxyUrl =
-          storedProxy ||
-          APP_CONFIG.defaultProxyUrl;
+const modelBadge =
+  $("modelBadge");
 
-        /*
-         * مهم:
-         * هر مدل قدیمی ذخیره‌شده پاک می‌شود
-         * و همیشه Gemini 3.5 Flash استفاده می‌شود.
-         */
-        state.config.model =
-          APP_CONFIG.defaultModel;
+const sidebar =
+  $("sidebar");
 
-        localStorage.setItem(
-          APP_CONFIG.storageKeys.selectedModel,
-          APP_CONFIG.defaultModel
-        );
+const settingsModal =
+  $("settingsModal");
 
-        const storedChats =
-          localStorage.getItem(
-            APP_CONFIG.storageKeys.chats
-          );
+const proxyUrlInput =
+  $("proxyUrl");
 
-        state.chats =
-          storedChats
-            ? JSON.parse(storedChats)
-            : [];
+const modelSelect =
+  $("modelSelect");
 
-        const storedActiveId =
-          localStorage.getItem(
-            APP_CONFIG.storageKeys.activeChatId
-          );
 
-        if (
-          storedActiveId &&
-          state.chats.some(function (c) {
-            return c.id === storedActiveId;
-          })
-        ) {
-          state.activeChatId =
-            storedActiveId;
+/* ================================
+   STORAGE
+================================ */
 
-        } else if (
-          state.chats.length > 0
-        ) {
-          state.activeChatId =
-            state.chats[0].id;
+function saveState() {
 
-        } else {
-          createNewChat(false);
-        }
+  localStorage.setItem(
+    APP_CONFIG.storageKeys.chats,
+    JSON.stringify(state.chats)
+  );
 
-      } catch (e) {
+  localStorage.setItem(
+    APP_CONFIG.storageKeys.activeChat,
+    state.activeChatId || ""
+  );
 
-        console.error(
-          'Error loading state from localStorage:',
-          e
-        );
+  localStorage.setItem(
+    APP_CONFIG.storageKeys.selectedModel,
+    state.config.model
+  );
 
-        state.chats = [];
+  localStorage.setItem(
+    APP_CONFIG.storageKeys.proxyUrl,
+    state.config.proxyUrl
+  );
 
-        createNewChat(false);
-      }
-    }
+  localStorage.setItem(
+    APP_CONFIG.storageKeys.theme,
+    state.theme
+  );
+}
 
-    function saveChats() {
-      try {
 
-        localStorage.setItem(
-          APP_CONFIG.storageKeys.chats,
-          JSON.stringify(state.chats)
-        );
+function loadState() {
 
-        if (state.activeChatId) {
-          localStorage.setItem(
-            APP_CONFIG.storageKeys.activeChatId,
-            state.activeChatId
-          );
-        }
+  try {
 
-      } catch (e) {
-        console.error(
-          'Error saving chats to localStorage:',
-          e
-        );
-      }
-    }
-
-    function createNewChat(
-      shouldRender
-    ) {
-      if (
-        shouldRender === undefined
-      ) {
-        shouldRender = true;
-      }
-
-      const newChat = {
-        id:
-          'chat_' +
-          Date.now() +
-          '_' +
-          Math.random()
-            .toString(36)
-            .slice(2, 8),
-
-        title: 'گفتگوی جدید',
-
-        createdAt:
-          Date.now(),
-
-        messages: []
-      };
-
-      state.chats.unshift(
-        newChat
+    const chats =
+      localStorage.getItem(
+        APP_CONFIG.storageKeys.chats
       );
 
-      state.activeChatId =
-        newChat.id;
-
-      saveChats();
-
-      if (shouldRender) {
-        renderSidebar();
-        renderActiveChat();
-      }
-    }
-
-    function deleteChat(
-      chatId,
-      e
-    ) {
-      if (e) {
-        e.stopPropagation();
-      }
-
+    if (chats) {
       state.chats =
-        state.chats.filter(
-          function (c) {
-            return c.id !== chatId;
-          }
-        );
+        JSON.parse(chats);
+    }
 
-      if (
-        state.activeChatId === chatId
-      ) {
+  } catch {
+    state.chats = [];
+  }
+
+
+  const activeChat =
+    localStorage.getItem(
+      APP_CONFIG.storageKeys.activeChat
+    );
+
+  if (
+    activeChat &&
+    state.chats.some(
+      chat => chat.id === activeChat
+    )
+  ) {
+    state.activeChatId =
+      activeChat;
+  }
+
+
+  const storedModel =
+    localStorage.getItem(
+      APP_CONFIG.storageKeys.selectedModel
+    );
+
+  /*
+    مهم:
+    مدل‌های قدیمی مثل Gemini را حذف می‌کنیم.
+  */
+
+  if (
+    APP_CONFIG.allowedModels.includes(
+      storedModel
+    )
+  ) {
+    state.config.model =
+      storedModel;
+  } else {
+
+    state.config.model =
+      APP_CONFIG.defaultModel;
+
+    localStorage.setItem(
+      APP_CONFIG.storageKeys.selectedModel,
+      state.config.model
+    );
+  }
+
+
+  const storedProxy =
+    localStorage.getItem(
+      APP_CONFIG.storageKeys.proxyUrl
+    );
+
+  if (storedProxy) {
+    state.config.proxyUrl =
+      storedProxy;
+  }
+
+
+  const storedTheme =
+    localStorage.getItem(
+      APP_CONFIG.storageKeys.theme
+    );
+
+  if (
+    storedTheme === "dark" ||
+    storedTheme === "light"
+  ) {
+    state.theme =
+      storedTheme;
+  }
+
+}
+
+
+/* ================================
+   THEME
+================================ */
+
+function applyTheme() {
+
+  if (state.theme === "dark") {
+
+    document.documentElement
+      .classList.add("dark");
+
+    $("themeText").textContent =
+      "حالت روشن";
+
+  } else {
+
+    document.documentElement
+      .classList.remove("dark");
+
+    $("themeText").textContent =
+      "حالت تاریک";
+  }
+
+}
+
+
+/* ================================
+   CHAT
+================================ */
+
+function createChat() {
+
+  const chat = {
+
+    id:
+      Date.now().toString(),
+
+    title:
+      "گفتگوی جدید",
+
+    messages: [],
+
+    createdAt:
+      Date.now()
+
+  };
+
+  state.chats.unshift(chat);
+
+  state.activeChatId =
+    chat.id;
+
+  saveState();
+
+  renderChats();
+
+  renderMessages();
+
+  messageInput.focus();
+
+}
+
+
+function getActiveChat() {
+
+  return state.chats.find(
+    chat =>
+      chat.id === state.activeChatId
+  );
+
+}
+
+
+function ensureChat() {
+
+  let chat =
+    getActiveChat();
+
+  if (!chat) {
+
+    createChat();
+
+    chat =
+      getActiveChat();
+  }
+
+  return chat;
+}
+
+
+/* ================================
+   CHAT LIST
+================================ */
+
+function renderChats() {
+
+  chatList.innerHTML = "";
+
+  emptyChats.style.display =
+    state.chats.length
+      ? "none"
+      : "block";
+
+  for (const chat of state.chats) {
+
+    const button =
+      document.createElement("button");
+
+    button.className =
+      "w-full text-right px-3 py-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition " +
+      (
+        chat.id === state.activeChatId
+          ? "bg-slate-100 dark:bg-slate-800"
+          : ""
+      );
+
+    button.innerHTML = `
+      <div class="font-medium text-sm truncate">
+        ${escapeHtml(chat.title)}
+      </div>
+
+      <div class="text-[11px] text-slate-400 mt-1">
+        ${chat.messages.length} پیام
+      </div>
+    `;
+
+    button.addEventListener(
+      "click",
+      () => {
+
         state.activeChatId =
-          state.chats.length > 0
-            ? state.chats[0].id
-            : null;
+          chat.id;
 
-        if (!state.activeChatId) {
-          createNewChat(false);
-        }
+        saveState();
+
+        renderChats();
+
+        renderMessages();
+
+        closeMobileSidebar();
+
       }
+    );
 
-      saveChats();
-      renderSidebar();
-      renderActiveChat();
-    }
+    chatList.appendChild(button);
+  }
 
-    function selectChat(chatId) {
-      if (state.isGenerating) {
-        return;
-      }
+}
 
-      state.activeChatId =
-        chatId;
 
-      saveChats();
-      renderSidebar();
-      renderActiveChat();
+/* ================================
+   MESSAGE RENDER
+================================ */
 
-      toggleSidebar(false);
-    }
+function renderMessages() {
 
-    function getActiveChat() {
-      return state.chats.find(
-        function (c) {
-          return c.id ===
-            state.activeChatId;
-        }
-      );
-    }
+  const chat =
+    getActiveChat();
 
-    function renderSidebar() {
-      els.chatsList.innerHTML = '';
+  messageContainer.innerHTML = "";
 
-      state.chats.forEach(
-        function (chat) {
+  if (!chat || chat.messages.length === 0) {
 
-          const isActive =
-            chat.id ===
-            state.activeChatId;
+    welcome.classList.remove("hidden");
 
-          const item =
-            document.createElement(
-              'div'
-            );
+    messageContainer.classList.add("hidden");
 
-          item.className =
-            'group flex items-center justify-between p-2.5 rounded-xl cursor-pointer text-xs md:text-sm transition-all ' +
-            (
-              isActive
-                ? 'bg-brand-500/10 text-brand-600 dark:text-brand-400 font-medium'
-                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-surface-800'
-            );
+    headerTitle.textContent =
+      chat
+        ? chat.title
+        : "گفتگوی جدید";
 
-          item.onclick =
-            function () {
-              selectChat(chat.id);
-            };
+    return;
+  }
 
-          item.innerHTML =
-            '<div class="flex items-center gap-2 truncate flex-1">' +
+  welcome.classList.add("hidden");
 
-            '<svg class="w-4 h-4 flex-shrink-0 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">' +
-            '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>' +
-            '</svg>' +
+  messageContainer.classList.remove("hidden");
 
-            '<span class="truncate">' +
-            escapeHtml(chat.title) +
-            '</span>' +
+  headerTitle.textContent =
+    chat.title;
 
-            '</div>' +
 
-            '<button class="delete-btn opacity-0 group-hover:opacity-100 p-1 hover:text-red-500 rounded transition-opacity" title="حذف گفتگو">' +
+  for (const message of chat.messages) {
 
-            '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">' +
-            '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>' +
-            '</svg>' +
+    appendMessageToDOM(
+      message.role,
+      message.content
+    );
 
-            '</button>';
+  }
 
-          item
-            .querySelector(
-              '.delete-btn'
-            )
-            .addEventListener(
-              'click',
-              function (e) {
-                deleteChat(
-                  chat.id,
-                  e
-                );
-              }
-            );
+  scrollToBottom();
 
-          els.chatsList.appendChild(
-            item
-          );
-        }
-      );
-    }
+}
 
-    function renderActiveChat() {
-      const activeChat =
-        getActiveChat();
 
-      if (!activeChat) {
-        return;
-      }
+/* ================================
+   ADD MESSAGE
+================================ */
 
-      els.currentChatTitle.innerText =
-        activeChat.title;
+function appendMessageToDOM(
+  role,
+  content
+) {
 
-      els.messagesFeed.innerHTML =
-        '';
+  const wrapper =
+    document.createElement("div");
 
-      if (
-        activeChat.messages.length === 0
-      ) {
+  const isUser =
+    role === "user";
 
-        els.emptyState.classList.remove(
-          'hidden'
-        );
-
-        els.messagesFeed.appendChild(
-          els.emptyState
-        );
-
-      } else {
-
-        els.emptyState.classList.add(
-          'hidden'
-        );
-
-        activeChat.messages.forEach(
-          function (msg) {
-            appendMessageToFeed(
-              msg.role,
-              msg.content,
-              msg.id,
-              false
-            );
-          }
-        );
-
-        scrollFeedToBottom();
-      }
-    }
-
-    function createAvatarElement(
+  wrapper.className =
+    "flex " +
+    (
       isUser
-    ) {
-      const el =
-        document.createElement(
-          'div'
-        );
+        ? "justify-start"
+        : "justify-end"
+    );
 
-      el.className =
-        isUser
-          ? 'w-8 h-8 rounded-xl bg-gray-200 dark:bg-surface-800 text-gray-700 dark:text-gray-300 flex items-center justify-center text-xs font-bold flex-shrink-0'
-          : 'w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-400 text-white flex items-center justify-center text-xs font-bold flex-shrink-0 shadow-md shadow-brand-500/20';
 
-      el.innerText =
-        isUser
-          ? 'شما'
-          : 'A';
+  const bubble =
+    document.createElement("div");
 
-      return el;
-    }
+  bubble.className =
+    "max-w-[90%] rounded-2xl px-4 py-3 " +
+    (
+      isUser
+        ? "bg-slate-900 text-white"
+        : "bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100"
+    );
 
-    function appendMessageToFeed(
-      role,
-      content,
-      messageId,
-      animate
-    ) {
+
+  if (isUser) {
+
+    bubble.textContent =
+      content;
+
+  } else {
+
+    const contentDiv =
+      document.createElement("div");
+
+    contentDiv.className =
+      "message-content";
+
+    contentDiv.innerHTML =
+      renderMarkdown(content);
+
+    bubble.appendChild(
+      contentDiv
+    );
+
+  }
+
+
+  wrapper.appendChild(
+    bubble
+  );
+
+  messageContainer.appendChild(
+    wrapper
+  );
+
+  if (!isUser) {
+    addCodeCopyButtons(
+      bubble
+    );
+  }
+
+  return bubble;
+
+}
+
+
+/* ================================
+   MARKDOWN
+================================ */
+
+function renderMarkdown(text) {
+
+  if (
+    typeof marked === "undefined"
+  ) {
+    return escapeHtml(text)
+      .replace(/\n/g, "<br>");
+  }
+
+  return marked.parse(
+    text || ""
+  );
+
+}
+
+
+/* ================================
+   CODE COPY
+================================ */
+
+function addCodeCopyButtons(
+  container
+) {
+
+  const blocks =
+    container.querySelectorAll(
+      "pre"
+    );
+
+  blocks.forEach(
+    pre => {
+
       if (
-        animate === undefined
+        pre.parentElement.classList.contains(
+          "code-wrapper"
+        )
       ) {
-        animate = true;
+        return;
       }
 
-      const isUser =
-        role === 'user';
+      const wrapper =
+        document.createElement("div");
 
-      const msgDiv =
-        document.createElement(
-          'div'
-        );
+      wrapper.className =
+        "code-wrapper";
 
-      msgDiv.id =
-        messageId ||
-        ('msg_' + Date.now());
-
-      msgDiv.className =
-        'flex gap-3 max-w-4xl mx-auto w-full ' +
-        (
-          isUser
-            ? 'justify-end'
-            : 'justify-start'
-        ) +
-        (
-          animate
-            ? ' animate-fade-in'
-            : ''
-        );
-
-      const avatar =
-        createAvatarElement(
-          isUser
-        );
-
-      const contentBox =
-        document.createElement(
-          'div'
-        );
-
-      contentBox.className =
-        'relative group rounded-2xl p-4 text-sm leading-relaxed max-w-[85%] md:max-w-[78%] ' +
-        (
-          isUser
-            ? 'bg-brand-600 text-white rounded-br-sm'
-            : 'bg-white dark:bg-surface-900 border border-gray-200 dark:border-gray-800/80 text-gray-800 dark:text-gray-100 rounded-bl-sm shadow-sm'
-        );
-
-      if (isUser) {
-
-        contentBox.innerText =
-          content;
-
-      } else {
-
-        contentBox.innerHTML =
-          '<div class="prose dark:prose-invert max-w-none text-sm md:text-base leading-relaxed content-text">' +
-          window.__renderMarkdown(
-            content || ''
-          ) +
-          '</div>' +
-
-          '<div class="mt-3 pt-2 border-t border-gray-100 dark:border-gray-800/60 flex items-center justify-between text-[11px] text-gray-400">' +
-
-          '<span class="font-medium text-brand-500">' +
-          'Armin AI' +
-          '</span>' +
-
-          '<button class="copy-response-btn flex items-center gap-1 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">' +
-
-          '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">' +
-          '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>' +
-          '</svg>' +
-
-          '<span>کپی متن</span>' +
-
-          '</button>' +
-
-          '</div>';
-
-        const copyBtn =
-          contentBox.querySelector(
-            '.copy-response-btn'
-          );
-
-        if (copyBtn) {
-          copyBtn.onclick =
-            function () {
-              copyText(
-                content,
-                copyBtn
-              );
-            };
-        }
-      }
-
-      if (isUser) {
-
-        msgDiv.appendChild(
-          contentBox
-        );
-
-        msgDiv.appendChild(
-          avatar
-        );
-
-      } else {
-
-        msgDiv.appendChild(
-          avatar
-        );
-
-        msgDiv.appendChild(
-          contentBox
-        );
-      }
-
-      enhanceCodeBlocks(
-        contentBox
+      pre.parentNode.insertBefore(
+        wrapper,
+        pre
       );
 
-      els.messagesFeed.appendChild(
-        msgDiv
+      wrapper.appendChild(
+        pre
       );
 
-      return msgDiv;
-    }
+      const button =
+        document.createElement("button");
 
-    function enhanceCodeBlocks(
-      container
-    ) {
-      const blocks =
-        container.querySelectorAll(
-          'pre code'
-        );
+      button.className =
+        "copy-code";
 
-      blocks.forEach(
-        function (block) {
+      button.textContent =
+        "کپی";
 
-          const pre =
-            block.parentElement;
+      button.addEventListener(
+        "click",
+        async () => {
 
-          if (
-            pre.dataset.enhanced
-          ) {
-            return;
-          }
+          const code =
+            pre.querySelector("code");
 
-          pre.dataset.enhanced =
-            'true';
-
-          pre.className =
-            'relative group my-3 rounded-xl overflow-hidden border border-gray-700/50 bg-[#0d1117]';
-
-          const langClass =
-            Array.from(
-              block.classList
-            ).find(
-              function (c) {
-                return c.indexOf(
-                  'language-'
-                ) === 0;
-              }
-            );
-
-          const lang =
-            langClass
-              ? langClass.replace(
-                  'language-',
-                  ''
-                )
-              : 'code';
-
-          const bar =
-            document.createElement(
-              'div'
-            );
-
-          bar.className =
-            'flex items-center justify-between px-3 py-1.5 bg-gray-900/90 text-gray-400 text-xs border-b border-gray-800 direction-ltr';
-
-          bar.innerHTML =
-            '<span class="font-mono text-[11px] uppercase">' +
-            escapeHtml(lang) +
-            '</span>' +
-
-            '<button class="copy-code-btn flex items-center gap-1 hover:text-white transition-colors text-[11px]">' +
-
-            '<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">' +
-            '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 002 2v8a2 2 0 002 2z"/>' +
-            '</svg>' +
-
-            '<span>کپی کد</span>' +
-
-            '</button>';
-
-          bar
-            .querySelector(
-              '.copy-code-btn'
-            )
-            .onclick =
-            function (e) {
-              copyText(
-                block.innerText,
-                e.currentTarget
-              );
-            };
-
-          pre.insertBefore(
-            bar,
-            block
+          await navigator.clipboard.writeText(
+            code
+              ? code.innerText
+              : pre.innerText
           );
+
+          button.textContent =
+            "کپی شد";
+
+          setTimeout(
+            () => {
+              button.textContent =
+                "کپی";
+            },
+            1200
+          );
+
         }
       );
+
+      wrapper.appendChild(
+        button
+      );
+
     }
+  );
 
-    async function sendMessage(
-      userPrompt
-    ) {
-      const trimmed =
-        String(
-          userPrompt || ''
-        ).trim();
+}
 
-      if (
-        !trimmed ||
-        state.isGenerating
-      ) {
-        return;
-      }
 
-      if (
-        trimmed.length >
-        APP_CONFIG.maxInputLength
-      ) {
-        showError(
-          'طول پیام بیش از حد مجاز است (حداکثر ' +
-          APP_CONFIG.maxInputLength +
-          ' کاراکتر).'
-        );
+/* ================================
+   SEND
+================================ */
 
-        return;
-      }
+async function sendMessage(
+  text
+) {
 
-      if (
-        !state.config.proxyUrl.trim()
-      ) {
-        showError(
-          'لطفاً ابتدا آدرس Cloudflare Worker را تنظیم کنید.'
-        );
+  text =
+    String(text || "").trim();
 
-        return;
-      }
+  if (!text || state.sending) {
+    return;
+  }
 
-      const activeChat =
-        getActiveChat();
 
-      if (!activeChat) {
-        return;
-      }
+  const chat =
+    ensureChat();
 
-      hideError();
 
-      if (
-        activeChat.messages.length ===
-        0
-      ) {
-        activeChat.title =
-          buildTitleSafely(
-            trimmed
-          );
+  if (chat.messages.length === 0) {
 
-        els.currentChatTitle.innerText =
-          activeChat.title;
-      }
+    chat.title =
+      text.length > 35
+        ? text.slice(0, 35) + "..."
+        : text;
 
-      const userMessage = {
-        id:
-          'u_' + Date.now(),
+  }
 
-        role: 'user',
 
-        content:
-          trimmed
-      };
+  chat.messages.push({
+    role: "user",
+    content: text
+  });
 
-      activeChat.messages.push(
-        userMessage
-      );
 
-      saveChats();
-      renderSidebar();
+  saveState();
 
-      if (
-        els.emptyState.parentNode ===
-        els.messagesFeed
-      ) {
-        els.emptyState.remove();
-      }
+  renderChats();
 
-      appendMessageToFeed(
-        'user',
-        trimmed,
-        userMessage.id
-      );
+  renderMessages();
 
-      scrollFeedToBottom();
 
-      els.promptInput.value = '';
+  state.sending = true;
 
-      adjustTextareaHeight();
+  sendBtn.disabled = true;
 
-      toggleGenerating(true);
+  messageInput.disabled = true;
 
-      const aiMessageId =
-        'ai_' + Date.now();
 
-      const aiMsgEl =
-        appendMessageToFeed(
-          'assistant',
-          '',
-          aiMessageId
-        );
+  const assistantBubble =
+    createStreamingBubble();
 
-      const textContainer =
-        aiMsgEl.querySelector(
-          '.content-text'
-        );
 
-      textContainer.innerHTML =
-        '<div class="flex items-center gap-1.5 py-1 text-brand-500">' +
+  try {
 
-        '<span class="w-2 h-2 rounded-full bg-brand-500 typing-dot"></span>' +
-        '<span class="w-2 h-2 rounded-full bg-brand-500 typing-dot"></span>' +
-        '<span class="w-2 h-2 rounded-full bg-brand-500 typing-dot"></span>' +
-
-        '</div>';
-
-      state.abortController =
-        new AbortController();
-
-      state.timeoutHandle =
-        setTimeout(
-          function () {
-            if (
-              state.abortController
-            ) {
-              state.abortController.abort(
-                'timeout'
-              );
-            }
-          },
-          APP_CONFIG.streamTimeoutMs
-        );
-
-      let accumulatedText = '';
-
-      try {
-
-        const contentsPayload =
-          activeChat.messages
-            .slice(0, -1)
-            .map(
-              function (m) {
-                return {
-                  role:
-                    m.role === 'user'
-                      ? 'user'
-                      : 'model',
-
-                  parts: [
-                    {
-                      text:
-                        m.content
-                    }
-                  ]
-                };
-              }
-            );
-
-        contentsPayload.push({
-          role: 'user',
+    const contentsPayload =
+      chat.messages.map(
+        message => ({
+          role:
+            message.role === "assistant"
+              ? "model"
+              : "user",
 
           parts: [
             {
-              text: trimmed
+              text:
+                message.content
             }
           ]
-        });
+        })
+      );
 
-        const endpointUrl =
-          state.config.proxyUrl
-            .replace(/\/+$/, '') +
-          '/api/chat';
 
-        const response =
-          await fetch(
-            endpointUrl,
-            {
-              method: 'POST',
+    const endpointUrl =
+      state.config.proxyUrl
+        .replace(/\/+$/, "")
+      + "/api/chat";
 
-              headers: {
-                'Content-Type':
-                  'application/json'
-              },
 
-              body:
-                JSON.stringify({
-                  model:
-                    'gemini-3.5-flash',
+    const response =
+      await fetch(
+        endpointUrl,
+        {
+          method: "POST",
 
-                  contents:
-                    contentsPayload,
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
 
-                  systemInstruction:
-                    APP_CONFIG.systemPersona,
+          body:
+            JSON.stringify({
+              model:
+                state.config.model,
 
-                  stream: true
-                }),
+              contents:
+                contentsPayload,
 
-              signal:
-                state.abortController.signal
-            }
-          );
+              systemInstruction:
+                APP_CONFIG.systemPersona,
 
-        if (!response.ok) {
-
-          let errorDetail =
-            'خطای سرور (' +
-            response.status +
-            ')';
-
-          try {
-
-            const errJson =
-              await response.json();
-
-            if (
-              errJson &&
-              errJson.error &&
-              errJson.error.message
-            ) {
-              errorDetail =
-                errJson.error.message;
-            }
-
-          } catch (e) {
-          }
-
-          throw new Error(
-            errorDetail
-          );
+              stream:
+                true
+            })
         }
+      );
 
-        if (!response.body) {
-          throw new Error(
-            'پاسخ سرور فاقد بدنه قابل خواندن است.'
-          );
-        }
 
-        const reader =
-          response.body.getReader();
+    if (!response.ok) {
 
-        const decoder =
-          new TextDecoder(
-            'utf-8'
-          );
+      let errorText =
+        await response.text();
 
-        let buffer = '';
+      try {
 
-        while (true) {
+        const errorJson =
+          JSON.parse(errorText);
 
-          const chunk =
-            await reader.read();
+        errorText =
+          errorJson?.error?.message ||
+          errorJson?.message ||
+          errorText;
 
-          if (chunk.done) {
-            break;
-          }
+      } catch {}
 
-          buffer +=
-            decoder.decode(
-              chunk.value,
-              {
-                stream: true
-              }
-            );
+      throw new Error(
+        errorText ||
+        `خطای سرور: ${response.status}`
+      );
 
-          const lines =
-            buffer.split('\n');
+    }
 
-          buffer =
-            lines.pop() || '';
 
-          for (
-            let i = 0;
-            i < lines.length;
-            i++
-          ) {
+    if (!response.body) {
+      throw new Error(
+        "پاسخی از سرور دریافت نشد."
+      );
+    }
 
-            const line =
-              lines[i].trim();
 
-            if (
-              line.indexOf(
-                'data:'
-              ) !== 0
-            ) {
-              continue;
-            }
+    /*
+      Groq / OpenAI-compatible SSE
+    */
 
-            const jsonStr =
-              line
-                .slice(5)
-                .trim();
+    const reader =
+      response.body.getReader();
 
-            if (
-              !jsonStr ||
-              jsonStr === '[DONE]'
-            ) {
-              continue;
-            }
+    const decoder =
+      new TextDecoder("utf-8");
 
-            try {
+    let buffer = "";
 
-              const data =
-                JSON.parse(
-                  jsonStr
-                );
+    let fullText = "";
 
-              const candidate =
-                data &&
-                data.candidates &&
-                data.candidates[0];
+    while (true) {
 
-              const part =
-                candidate &&
-                candidate.content &&
-                candidate.content.parts &&
-                candidate.content.parts[0];
+      const {
+        value,
+        done
+      } =
+        await reader.read();
 
-              const textPiece =
-                part &&
-                part.text;
 
-              if (textPiece) {
-
-                accumulatedText +=
-                  textPiece;
-
-                textContainer.innerHTML =
-                  window.__renderMarkdown(
-                    accumulatedText
-                  );
-
-                enhanceCodeBlocks(
-                  aiMsgEl
-                );
-
-                scrollFeedToBottom();
-              }
-
-            } catch (e) {
-            }
-          }
-        }
-
-        if (
-          !accumulatedText.trim()
-        ) {
-
-          accumulatedText =
-            'پاسخی از سرور دریافت نشد. لطفاً مجدداً تلاش کنید.';
-
-          textContainer.innerHTML =
-            window.__renderMarkdown(
-              accumulatedText
-            );
-        }
-
-        activeChat.messages.push({
-          id:
-            aiMessageId,
-
-          role:
-            'assistant',
-
-          content:
-            accumulatedText
-        });
-
-        saveChats();
-
-        const copyBtn =
-          aiMsgEl.querySelector(
-            '.copy-response-btn'
-          );
-
-        if (copyBtn) {
-          copyBtn.onclick =
-            function () {
-              copyText(
-                accumulatedText,
-                copyBtn
-              );
-            };
-        }
-
-      } catch (err) {
-
-        const isAbort =
-          err &&
-          err.name ===
-            'AbortError';
-
-        const isTimeout =
-          isAbort &&
-          state.abortController &&
-          state.abortController.signal &&
-          state.abortController.signal.reason ===
-            'timeout';
-
-        if (isAbort) {
-
-          const note =
-            isTimeout
-              ? '\n\n*(زمان انتظار پاسخ به پایان رسید. لطفاً دوباره تلاش کنید.)*'
-              : '\n\n*(تولید پاسخ توسط کاربر متوقف شد)*';
-
-          accumulatedText +=
-            note;
-
-          textContainer.innerHTML =
-            window.__renderMarkdown(
-              accumulatedText
-            );
-
-          if (
-            accumulatedText.trim()
-          ) {
-
-            activeChat.messages.push({
-              id:
-                aiMessageId,
-
-              role:
-                'assistant',
-
-              content:
-                accumulatedText
-            });
-
-            saveChats();
-          }
-
-        } else {
-
-          console.error(
-            'Chat generation error:',
-            err
-          );
-
-          showError(
-            err.message ||
-            'برقراری ارتباط با مدل هوش مصنوعی با خطا مواجه شد.'
-          );
-
-          textContainer.innerHTML =
-            '<span class="text-red-500 font-medium">' +
-            'خطا در دریافت پاسخ: ' +
-            escapeHtml(
-              err.message ||
-              'خطای ناشناخته'
-            ) +
-            '</span>';
-        }
-
-      } finally {
-
-        if (
-          state.timeoutHandle
-        ) {
-          clearTimeout(
-            state.timeoutHandle
-          );
-
-          state.timeoutHandle =
-            null;
-        }
-
-        toggleGenerating(
-          false
-        );
-
-        state.abortController =
-          null;
-
-        scrollFeedToBottom();
+      if (done) {
+        break;
       }
-    }
 
-    function toggleGenerating(
-      isGenerating
-    ) {
-      state.isGenerating =
-        isGenerating;
 
-      els.sendBtn.disabled =
-        isGenerating;
-
-      els.sendBtn.classList.toggle(
-        'hidden',
-        isGenerating
-      );
-
-      els.stopGenBtn.classList.toggle(
-        'hidden',
-        !isGenerating
-      );
-    }
-
-    function scrollFeedToBottom() {
-      els.messagesFeed.scrollTop =
-        els.messagesFeed.scrollHeight;
-    }
-
-    function adjustTextareaHeight() {
-      els.promptInput.style.height =
-        'auto';
-
-      els.promptInput.style.height =
-        Math.min(
-          els.promptInput.scrollHeight,
-          144
-        ) + 'px';
-
-      els.sendBtn.disabled =
-        !els.promptInput.value.trim() ||
-        state.isGenerating;
-    }
-
-    function showError(msg) {
-      els.errorMessageText.innerText =
-        msg;
-
-      els.errorToast.classList.remove(
-        'hidden'
-      );
-    }
-
-    function hideError() {
-      els.errorToast.classList.add(
-        'hidden'
-      );
-    }
-
-    function toggleSidebar(
-      open
-    ) {
-      if (open) {
-
-        els.sidebar.classList.remove(
-          'translate-x-full'
+      buffer +=
+        decoder.decode(
+          value,
+          {
+            stream: true
+          }
         );
 
-        els.sidebarBackdrop.classList.remove(
-          'hidden'
-        );
 
-      } else {
+      const lines =
+        buffer.split("\n");
 
-        els.sidebar.classList.add(
-          'translate-x-full'
-        );
+      buffer =
+        lines.pop() || "";
 
-        els.sidebarBackdrop.classList.add(
-          'hidden'
-        );
-      }
-    }
 
-    function setupTheme() {
-      const savedTheme =
-        localStorage.getItem(
-          APP_CONFIG.storageKeys.theme
-        ) || 'dark';
-
-      if (
-        savedTheme === 'dark'
+      for (
+        const rawLine of lines
       ) {
 
-        document.documentElement.classList.add(
-          'dark'
-        );
+        const line =
+          rawLine.trim();
 
-        els.themeIcon.innerText =
-          '🌙';
 
-      } else {
-
-        document.documentElement.classList.remove(
-          'dark'
-        );
-
-        els.themeIcon.innerText =
-          '☀️';
-      }
-    }
-
-    function toggleTheme() {
-      const isDark =
-        document.documentElement.classList.toggle(
-          'dark'
-        );
-
-      localStorage.setItem(
-        APP_CONFIG.storageKeys.theme,
-        isDark
-          ? 'dark'
-          : 'light'
-      );
-
-      els.themeIcon.innerText =
-        isDark
-          ? '🌙'
-          : '☀️';
-    }
-
-    function initializeEvents() {
-
-      els.openSidebarBtn.addEventListener(
-        'click',
-        function () {
-          toggleSidebar(true);
+        if (!line) {
+          continue;
         }
-      );
 
-      els.closeSidebarBtn.addEventListener(
-        'click',
-        function () {
-          toggleSidebar(false);
+
+        if (
+          !line.startsWith(
+            "data:"
+          )
+        ) {
+          continue;
         }
-      );
 
-      els.sidebarBackdrop.addEventListener(
-        'click',
-        function () {
-          toggleSidebar(false);
+
+        const data =
+          line.slice(5).trim();
+
+
+        if (
+          data === "[DONE]"
+        ) {
+          continue;
         }
-      );
 
-      els.newChatBtn.addEventListener(
-        'click',
-        function () {
-          createNewChat();
-          toggleSidebar(false);
-        }
-      );
 
-      els.clearChatBtn.addEventListener(
-        'click',
-        function () {
+        try {
 
-          const active =
-            getActiveChat();
+          const json =
+            JSON.parse(data);
 
-          if (active) {
 
-            active.messages = [];
+          const delta =
+            json
+              ?.choices?.[0]
+              ?.delta
+              ?.content;
 
-            saveChats();
-            renderActiveChat();
-          }
-        }
-      );
-
-      els.promptInput.addEventListener(
-        'input',
-        adjustTextareaHeight
-      );
-
-      els.promptInput.addEventListener(
-        'keydown',
-        function (e) {
 
           if (
-            e.key === 'Enter' &&
-            !e.shiftKey
+            typeof delta ===
+            "string"
           ) {
 
-            e.preventDefault();
+            fullText +=
+              delta;
 
-            if (
-              !els.sendBtn.disabled
-            ) {
-              els.chatForm.dispatchEvent(
-                new Event(
-                  'submit',
-                  {
-                    cancelable: true
-                  }
-                )
-              );
-            }
+            updateStreamingBubble(
+              assistantBubble,
+              fullText
+            );
+
+            scrollToBottom();
           }
+
+        } catch {
+
+          /*
+            بعضی chunkها ممکن است
+            کامل JSON نباشند.
+            در این حالت نادیده گرفته می‌شوند.
+          */
+
         }
+
+      }
+
+    }
+
+
+    if (!fullText.trim()) {
+
+      throw new Error(
+        "پاسخی از سرور دریافت نشد."
       );
 
-      els.chatForm.addEventListener(
-        'submit',
-        function (e) {
-          e.preventDefault();
+    }
+
+
+    chat.messages.push({
+      role: "assistant",
+      content: fullText
+    });
+
+
+    saveState();
+
+    renderChats();
+
+  } catch (error) {
+
+    assistantBubble.innerHTML = `
+      <div class="text-red-500">
+        خطا: ${escapeHtml(
+          error.message ||
+          "خطای نامشخص"
+        )}
+      </div>
+    `;
+
+  } finally {
+
+    state.sending = false;
+
+    sendBtn.disabled = false;
+
+    messageInput.disabled = false;
+
+    messageInput.focus();
+
+    scrollToBottom();
+
+  }
+
+}
+
+
+/* ================================
+   STREAMING BUBBLE
+================================ */
+
+function createStreamingBubble() {
+
+  welcome.classList.add("hidden");
+
+  messageContainer.classList.remove(
+    "hidden"
+  );
+
+
+  const wrapper =
+    document.createElement("div");
+
+  wrapper.className =
+    "flex justify-end";
+
+
+  const bubble =
+    document.createElement("div");
+
+  bubble.className =
+    "max-w-[90%] rounded-2xl px-4 py-3 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100";
+
+
+  bubble.innerHTML = `
+    <div class="typing">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  `;
+
+
+  wrapper.appendChild(
+    bubble
+  );
+
+  messageContainer.appendChild(
+    wrapper
+  );
+
+
+  return bubble;
+
+}
+
+
+function updateStreamingBubble(
+  bubble,
+  text
+) {
+
+  bubble.innerHTML = `
+    <div class="message-content">
+      ${renderMarkdown(text)}
+    </div>
+  `;
+
+  addCodeCopyButtons(
+    bubble
+  );
+
+}
+
+
+/* ================================
+   UTILITIES
+================================ */
+
+function escapeHtml(text) {
+
+  return String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+}
+
+
+function scrollToBottom() {
+
+  messages.scrollTo({
+    top:
+      messages.scrollHeight,
+
+    behavior:
+      "smooth"
+  });
+
+}
+
+
+/* ================================
+   SETTINGS
+================================ */
+
+function openSettings() {
+
+  proxyUrlInput.value =
+    state.config.proxyUrl;
+
+  modelSelect.value =
+    state.config.model;
+
+  settingsModal.classList.remove(
+    "hidden"
+  );
+
+  settingsModal.classList.add(
+    "flex"
+  );
+
+}
+
+
+function closeSettings() {
+
+  settingsModal.classList.add(
+    "hidden"
+  );
+
+  settingsModal.classList.remove(
+    "flex"
+  );
+
+}
+
+
+/* ================================
+   SIDEBAR
+================================ */
+
+function openMobileSidebar() {
+
+  sidebar.classList.remove(
+    "closed"
+  );
+
+}
+
+
+function closeMobileSidebar() {
+
+  if (
+    window.innerWidth <= 768
+  ) {
+    sidebar.classList.add(
+      "closed"
+    );
+  }
+
+}
+
+
+/* ================================
+   EVENTS
+================================ */
+
+$("newChatBtn")
+  .addEventListener(
+    "click",
+    createChat
+  );
+
+
+$("settingsBtn")
+  .addEventListener(
+    "click",
+    openSettings
+  );
+
+
+$("closeSettings")
+  .addEventListener(
+    "click",
+    closeSettings
+  );
+
+
+$("cancelSettings")
+  .addEventListener(
+    "click",
+    closeSettings
+  );
+
+
+$("saveSettings")
+  .addEventListener(
+    "click",
+    () => {
+
+      const url =
+        proxyUrlInput.value.trim();
+
+      if (url) {
+
+        state.config.proxyUrl =
+          url.replace(/\/+$/, "");
+
+      }
+
+
+      state.config.model =
+        "openai/gpt-oss-120b";
+
+
+      saveState();
+
+      modelBadge.textContent =
+        "Groq";
+
+      closeSettings();
+
+    }
+  );
+
+
+$("themeBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      state.theme =
+        state.theme === "dark"
+          ? "light"
+          : "dark";
+
+      applyTheme();
+
+      saveState();
+
+    }
+  );
+
+
+$("openSidebar")
+  .addEventListener(
+    "click",
+    openMobileSidebar
+  );
+
+
+$("closeSidebar")
+  .addEventListener(
+    "click",
+    closeMobileSidebar
+  );
+
+
+chatForm.addEventListener(
+  "submit",
+  event => {
+
+    event.preventDefault();
+
+    const text =
+      messageInput.value.trim();
+
+    if (!text) {
+      return;
+    }
+
+    messageInput.value = "";
+
+    messageInput.style.height =
+      "auto";
+
+    sendMessage(text);
+
+  }
+);
+
+
+messageInput.addEventListener(
+  "keydown",
+  event => {
+
+    if (
+      event.key === "Enter" &&
+      !event.shiftKey
+    ) {
+
+      event.preventDefault();
+
+      chatForm.requestSubmit();
+
+    }
+
+  }
+);
+
+
+messageInput.addEventListener(
+  "input",
+  () => {
+
+    messageInput.style.height =
+      "auto";
+
+    messageInput.style.height =
+      Math.min(
+        messageInput.scrollHeight,
+        160
+      ) + "px";
+
+  }
+);
+
+
+document
+  .querySelectorAll(".prompt-btn")
+  .forEach(
+    button => {
+
+      button.addEventListener(
+        "click",
+        () => {
 
           sendMessage(
-            els.promptInput.value
+            button.dataset.prompt
           );
+
         }
       );
 
-      els.stopGenBtn.addEventListener(
-        'click',
-        function () {
+    }
+  );
 
-          if (
-            state.abortController
-          ) {
-            state.abortController.abort(
-              'user'
-            );
-          }
-        }
-      );
 
-      els.dismissErrorBtn.addEventListener(
-        'click',
-        hideError
-      );
+settingsModal.addEventListener(
+  "click",
+  event => {
 
-      const chips =
-        document.querySelectorAll(
-          '.prompt-chip'
-        );
-
-      chips.forEach(
-        function (chip) {
-
-          chip.addEventListener(
-            'click',
-            function () {
-
-              const text =
-                chip.innerText.replace(
-                  /^[^\s]+\s/,
-                  ''
-                );
-
-              els.promptInput.value =
-                text;
-
-              adjustTextareaHeight();
-
-              sendMessage(
-                text
-              );
-            }
-          );
-        }
-      );
-
-      els.openSettingsBtn.addEventListener(
-        'click',
-        function () {
-
-          els.proxyUrlInput.value =
-            state.config.proxyUrl;
-
-          els.modelSelect.value =
-            APP_CONFIG.defaultModel;
-
-          els.settingsModal.classList.remove(
-            'hidden'
-          );
-        }
-      );
-
-      els.closeSettingsModal.addEventListener(
-        'click',
-        function () {
-          els.settingsModal.classList.add(
-            'hidden'
-          );
-        }
-      );
-
-      els.saveSettingsBtn.addEventListener(
-        'click',
-        function () {
-
-          state.config.proxyUrl =
-            els.proxyUrlInput.value.trim() ||
-            APP_CONFIG.defaultProxyUrl;
-
-          state.config.model =
-            APP_CONFIG.defaultModel;
-
-          localStorage.setItem(
-            APP_CONFIG.storageKeys.proxyUrl,
-            state.config.proxyUrl
-          );
-
-          localStorage.setItem(
-            APP_CONFIG.storageKeys.selectedModel,
-            APP_CONFIG.defaultModel
-          );
-
-          els.settingsModal.classList.add(
-            'hidden'
-          );
-
-          hideError();
-        }
-      );
-
-      els.themeToggleBtn.addEventListener(
-        'click',
-        toggleTheme
-      );
+    if (
+      event.target ===
+      settingsModal
+    ) {
+      closeSettings();
     }
 
-    window.addEventListener(
-      'DOMContentLoaded',
-      function () {
+  }
+);
 
-        setupMarkdown();
-        setupTheme();
-        loadState();
 
-        renderSidebar();
-        renderActiveChat();
+/* ================================
+   INIT
+================================ */
 
-        initializeEvents();
-        adjustTextareaHeight();
-      }
-    );
-  </script>
+loadState();
+
+applyTheme();
+
+renderChats();
+
+renderMessages();
+
+modelBadge.textContent =
+  "Groq";
+
+if (
+  window.innerWidth <= 768
+) {
+  sidebar.classList.add(
+    "closed"
+  );
+}
+
+</script>
 
 </body>
 </html>
